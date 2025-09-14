@@ -24,20 +24,6 @@ public class TimeTracking {
     this.timeTo = timeTo;
   }
 
-  public boolean isValid() {
-    return this.presence != null
-        && this.presence.isValid()
-        && this.task != null
-        && this.task.isValid()
-        && this.timeFrom != null
-        && this.timeTo != null
-        && this.timeFrom.isBefore(this.timeTo)
-        && this.timeFrom.isAfter(this.presence.getTimeIn())
-        && this.timeTo.isBefore(this.presence.getTimeOut())
-        && this.timeFrom.isAfter(this.task.getStart())
-        && this.timeTo.isBefore(this.task.getEnd());
-  }
-
   public boolean isGood() {
     if (this.timeFrom == null || this.timeTo == null) {
       return false;

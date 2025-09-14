@@ -11,6 +11,7 @@ public class Task {
   private final String name;
   private final LocalDateTime start;
   private final LocalDateTime end;
+  private final double estimationInHours;
   private final boolean completed;
 
   public Task(
@@ -18,23 +19,15 @@ public class Task {
       String name,
       LocalDateTime start,
       LocalDateTime end,
+      double estimationInHours,
       boolean completed
   ) {
     this.project = project;
     this.name = name;
     this.start = start;
     this.end = end;
+    this.estimationInHours = estimationInHours;
     this.completed = completed;
-  }
-
-  public boolean isValid() {
-    return this.project != null
-        && !this.project.isBlank()
-        && this.name != null
-        && !this.name.isBlank()
-        && this.start != null
-        && this.end != null
-        && this.start.isBefore(this.end);
   }
 
   public boolean isGood() {
@@ -52,20 +45,20 @@ public class Task {
 
   public double getRating() {
     if (this.start == null || this.end == null) {
-      throw new IllegalArgumentException("Task must have non-null start and end");
+      throw new NullPointerException("Task must have non-null start and end");
     }
 
-    long duration = ChronoUnit.HOURS.between(this.start, this.end);
+    double duration = ChronoUnit.HOURS.between(this.start, this.end);
     if (duration < 0) {
       throw new IllegalArgumentException("Invalid time range: start must be before end");
     }
 
-    double efficiency = this.completed ? 1.0 : -1.0;
-    double durationFactor = 1.0;
-    if (duration <= 7) {
-      durationFactor += (1.0 - duration * 0.125);
+    if (duration > estimationInHours * 1.5) {
+        throw new IllegalArgumentException("Task duration overly surpassed estimation");
     }
 
-    return efficiency * durationFactor;
+    double efficiency = this.completed ? 1.0 : 0.0;
+
+    return efficiency - duration / estimationInHours;
   }
 }

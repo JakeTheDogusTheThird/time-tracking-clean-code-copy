@@ -1,8 +1,7 @@
 import org.example.model.Person;
 import org.example.model.Presence;
-import org.example.service.CedacriPersonValidator;
-import org.example.service.CedacriPresenceValidator;
 import org.example.service.PersonValidator;
+import org.example.service.PresenceRankCalculator;
 import org.example.service.PresenceValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,18 +17,6 @@ public class TestPresence {
     private static final LocalDateTime validTimeIn = LocalDateTime.of(2025, 9, 9, 9, 0);
     private static final LocalDateTime validTimeOut = LocalDateTime.of(2025, 9, 9, 18, 0);
 
-//    @Test
-//    public void givenPresence_whenGetTimeIn_returnTimeIn() {
-//        Presence presence = new Presence(validPerson, validTimeIn, validTimeOut);
-//        assertEquals(validTimeIn, presence.getTimeIn());
-//    }
-//
-//    @Test
-//    public void givenPresence_whenGetTimeIn_returnTimeOut() {
-//        Presence presence = new Presence(validPerson, validTimeIn, validTimeOut);
-//        assertEquals(validTimeOut, presence.getTimeOut());
-//    }
-
     @Test
     public void givenNullPerson_whenIsValid_returnFalse() {
         Presence presence = new Presence(
@@ -37,8 +24,8 @@ public class TestPresence {
                 validTimeIn,
                 validTimeOut
         );
-        CedacriPersonValidator personValidator = new CedacriPersonValidator();
-        PresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
+        PersonValidator personValidator = new PersonValidator();
+        PresenceValidator presenceValidator = new PresenceValidator(personValidator);
         boolean result = presenceValidator.isValid(presence);
         assertFalse(result);
     }
@@ -51,8 +38,8 @@ public class TestPresence {
                 validTimeIn,
                 validTimeOut
         );
-        CedacriPersonValidator personValidator = new CedacriPersonValidator();
-        PresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
+        PersonValidator personValidator = new PersonValidator();
+        PresenceValidator presenceValidator = new PresenceValidator(personValidator);
         boolean result = presenceValidator.isValid(presence);
         assertFalse(result);
     }
@@ -64,8 +51,8 @@ public class TestPresence {
                 validTimeIn,
                 validTimeOut
         );
-        CedacriPersonValidator personValidator = new CedacriPersonValidator();
-        PresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
+        PersonValidator personValidator = new PersonValidator();
+        PresenceValidator presenceValidator = new PresenceValidator(personValidator);
         boolean result = presenceValidator.isValid(presence);
         assertTrue(result);
     }
@@ -74,8 +61,8 @@ public class TestPresence {
     @MethodSource("provideInvalidTimeEntries")
     public void isValid_ShouldReturnFalseForNonValidTimeEntries(LocalDateTime timeIn, LocalDateTime timeOut) {
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        CedacriPersonValidator personValidator = new CedacriPersonValidator();
-        PresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
+        PersonValidator personValidator = new PersonValidator();
+        PresenceValidator presenceValidator = new PresenceValidator(personValidator);
         boolean result = presenceValidator.isValid(presence);
         assertFalse(result);
     }
@@ -113,8 +100,8 @@ public class TestPresence {
     @MethodSource("provideValidTimeEntries")
     public void isValid_ShouldReturnTrueForValidTimeEntries(LocalDateTime timeIn, LocalDateTime timeOut) {
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        CedacriPersonValidator personValidator = new CedacriPersonValidator();
-        PresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
+        PersonValidator personValidator = new PersonValidator();
+        PresenceValidator presenceValidator = new PresenceValidator(personValidator);
         boolean result = presenceValidator.isValid(presence);
         assertTrue(result);
     }
@@ -181,19 +168,20 @@ public class TestPresence {
     }
 
     @ParameterizedTest
-    @MethodSource("provideValidTimeEntriesWithExpectedRatings")
-    public void givenTimeEntries_whenGetRating_returnRating(
+    @MethodSource("provideValidTimeEntriesWithExpectedRanks")
+    public void givenTimeEntries_whenCalculateRank_returnRank(
             LocalDateTime timeIn,
             LocalDateTime timeOut,
             double expected
     ) {
         double errorMargin = 0.001;
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        double result = presence.getRating();
+        PresenceRankCalculator rankCalculator = new PresenceRankCalculator();
+        double result = rankCalculator.calculateRank(presence);
         assertEquals(expected, result, errorMargin);
     }
 
-    private static Stream<Arguments> provideValidTimeEntriesWithExpectedRatings() {
+    private static Stream<Arguments> provideValidTimeEntriesWithExpectedRanks() {
         return Stream.of(
                 Arguments.of(
                         LocalDateTime.of(2025, 9, 9, 9, 0),
@@ -224,20 +212,24 @@ public class TestPresence {
     }
 
     @Test
-    public void givenTimeOutBeforeTimeIn_whenGetRating_throwsIllegalArgumentException() {
+    public void givenTimeOutBeforeTimeIn_whenCalculateRank_throwsIllegalArgumentException() {
         Presence presence = new Presence(validPerson, validTimeOut, validTimeIn);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, presence::getRating);
+        PresenceRankCalculator rankCalculator = new PresenceRankCalculator();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rankCalculator.calculateRank(presence));
         assertEquals("Presence must have timeIn before timeOut",  exception.getMessage());
     }
 
     @ParameterizedTest
     @MethodSource("provideNullTimeInAndTimeOut")
-    public void givenNullTimeInOrTimeOut_whenGetRating_throwsIllegalArgumentException(
+    public void givenNullTimeInOrTimeOut_whenCalculateRank_throwsIllegalArgumentException(
             LocalDateTime timeIn,
             LocalDateTime timeOut
     ) {
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, presence::getRating);
+        PresenceRankCalculator rankCalculator = new PresenceRankCalculator();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rankCalculator.calculateRank(presence));
         assertEquals("Presence must have non-null timeIn and timeOut",  exception.getMessage());
     }
 

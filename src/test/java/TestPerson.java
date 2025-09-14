@@ -1,5 +1,6 @@
 import org.example.model.Person;
-import org.example.service.CedacriPersonValidator;
+import org.example.service.PersonRankCalculator;
+import org.example.service.PersonValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +16,7 @@ public class TestPerson {
     @ValueSource(strings = {"John", "Alex Pereira", "NameSurname", "Name MiddleName Surname"})
     public void givenValidName_whenIsValid_returnTrue(String name) {
         Person person = new Person(name, "+37312345678");
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertTrue(result);
     }
@@ -24,7 +25,7 @@ public class TestPerson {
     @ValueSource(strings = {"John123", "Alex %%%", "123ASd"})
     public void givenInvalidName_whenIsValid_returnFalse(String name) {
         Person person = new Person(name, "+37312345678");
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -35,7 +36,7 @@ public class TestPerson {
     @ValueSource(strings = {" ", "\t", "\n", "\u000B", "\f", "\r"})
     public void givenNullEmptyAndBlankName_whenIsValid_returnFalse(String name) {
         Person person = new Person(name, "+37312345678");
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -45,7 +46,7 @@ public class TestPerson {
     @EmptySource
     public void givenNullEmptyPhone_whenIsValid_returnFalse(String phone) {
         Person person = new Person("John", phone);
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -54,7 +55,7 @@ public class TestPerson {
     @ValueSource(strings = {"+15555555555", "not a phone number", "+40123456789", "  "})
     public void givenNonItalianOrNonMoldavianPrefixPhoneString_whenIsValid_returnFalse(String phone) {
         Person person = new Person("John Doe", phone);
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -62,7 +63,7 @@ public class TestPerson {
     @Test
     public void givenMoldavianPrefixPhone_whenIsValid_returnTrue() {
         Person person = new Person("John Doe", "+37312345678");
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertTrue(result);
     }
@@ -70,7 +71,7 @@ public class TestPerson {
     @Test
     public void givenMoldavianPrefixWithIrregularLengthOfDigitsPhone_whenIsValid_returnFalse() {
         Person person = new Person("John Doe", "+373123456781");
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -79,7 +80,7 @@ public class TestPerson {
     @ValueSource(strings = {"+3912345", "+391234567891234"})
     public void givenItalianPrefixWithIrregularLengthOfDigitsPhone_whenIsValid_returnFalse(String phone) {
         Person person = new Person("John Doe", phone);
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -88,7 +89,7 @@ public class TestPerson {
     @ValueSource(strings = {"+39123456", "+39123456789123"})
     public void givenItalianPrefixPhoneWithRegularLengthOfDigits_whenIsValid_returnTrue(String phone) {
         Person person = new Person("John Doe", phone);
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertTrue(result);
     }
@@ -97,7 +98,7 @@ public class TestPerson {
     @ValueSource(strings = {"+39 123456", "+39 123456789123", "+373 12345678"})
     public void givenItalianPrefixOrMoldavianPrefixWithSpacesBetweenDigitsPhone_whenIsValid_returnFalse(String phone) {
         Person person = new Person("John Doe", phone);
-        CedacriPersonValidator validator =  new CedacriPersonValidator();
+        PersonValidator validator =  new PersonValidator();
         boolean result = validator.isValid(person);
         assertFalse(result);
     }
@@ -108,18 +109,21 @@ public class TestPerson {
             "+39123456789123,39123456789123",
             "+37312345678,37312345678000"
     })
-    public void givenPhone_whenGetRating_returnRating(String phone, long expectedRating) {
+    public void givenPhone_whenCalculateRank_returnRank(String phone, long expectedRank) {
         Person person = new Person("John", phone);
-        long result = person.getRating();
-        assertEquals(expectedRating, result);
+        PersonRankCalculator rankCalculator = new PersonRankCalculator();
+        double result = rankCalculator.calculateRank(person);
+        assertEquals(expectedRank, result);
     }
 
     @ParameterizedTest
     @NullSource
-    public void givenNullPhone_whenGetRating_throwsInvalidArgumentException(String phone) {
+    public void givenNullPhone_whenCalculateRank_throwsInvalidArgumentException(String phone) {
         Person person = new Person("John", phone);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, person::getRating);
-        assertEquals("Phone must not bet null", exception.getMessage());
+        PersonRankCalculator rankCalculator = new PersonRankCalculator();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rankCalculator.calculateRank(person));
+        assertEquals("Phone must not be null", exception.getMessage());
     }
 
     @Test

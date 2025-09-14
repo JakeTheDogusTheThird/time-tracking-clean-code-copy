@@ -20,9 +20,9 @@ public class TestTimeTracking {
   private static final Presence invalidPresence = new Presence(null, null, null);
   private static final LocalDateTime taskStart = LocalDateTime.of(2025, 9, 9, 10, 20);
   private static final LocalDateTime taskEnd = LocalDateTime.of(2025, 9, 9, 13, 30);
-  private static final Task task3Hour10Minutes = new Task("project", "valid", taskStart, taskEnd, true);
-  private static final Task task8Hour30Minutes = new Task("project", "8 hour 30 minute task", taskStart, taskStart.plusHours(8).plusMinutes(30), true);
-  private static final Task invalidTask = new Task(null, null, null, null, false);
+  private static final Task task3Hour10Minutes = new Task("project", "valid", taskStart, taskEnd, 10.0, true);
+  private static final Task task8Hour30Minutes = new Task("project", "8 hour 30 minute task", taskStart, taskStart.plusHours(8).plusMinutes(30), 10.0, true);
+  private static final Task invalidTask = new Task(null, null, null, null, 0.0, false);
 
   @Test
   public void givenValidTimeTracking_whenIsValid_returnTrue() {
@@ -33,10 +33,10 @@ public class TestTimeTracking {
         taskEnd.minusMinutes(1)
     );
 
-    CedacriPersonValidator personValidator = new CedacriPersonValidator();
-    CedacriPresenceValidator presenceValidator = new CedacriPresenceValidator(personValidator);
-    CedacriTaskValidator taskValidator = new CedacriTaskValidator();
-    TimeTrackingValidator timeTrackingValidator = new CedacriTimeTrackingValidator(presenceValidator, taskValidator);
+    PersonValidator personValidator = new PersonValidator();
+    PresenceValidator presenceValidator = new PresenceValidator(personValidator);
+    TaskValidator taskValidator = new TaskValidator();
+    TimeTrackingValidator timeTrackingValidator = new TimeTrackingValidator(presenceValidator, taskValidator);
 
     boolean result = timeTrackingValidator.isValid(timeTracking);
     assertTrue(result);
@@ -45,8 +45,13 @@ public class TestTimeTracking {
   @ParameterizedTest
   @MethodSource("provideTimeTrackingForIsValid")
   public void isValid_ShouldReturnFalseForInvalidTimeTracking(TimeTracking timeTracking) {
-    boolean result = timeTracking.isValid();
-    assertFalse(result);
+      PersonValidator personValidator = new PersonValidator();
+      PresenceValidator presenceValidator = new PresenceValidator(personValidator);
+      TaskValidator taskValidator = new TaskValidator();
+      TimeTrackingValidator timeTrackingValidator = new TimeTrackingValidator(presenceValidator, taskValidator);
+
+      boolean result = timeTrackingValidator.isValid(timeTracking);
+      assertFalse(result);
   }
 
   private static Stream<TimeTracking> provideTimeTrackingForIsValid() {
