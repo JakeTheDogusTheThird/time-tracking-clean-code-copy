@@ -42,23 +42,4 @@ public class Task {
 
     return this.completed && duration <= 8;
   }
-
-  public double getRating() {
-    if (this.start == null || this.end == null) {
-      throw new NullPointerException("Task must have non-null start and end");
-    }
-
-    double duration = ChronoUnit.HOURS.between(this.start, this.end);
-    if (duration < 0) {
-      throw new IllegalArgumentException("Invalid time range: start must be before end");
-    }
-
-    if (duration > estimationInHours * 1.5) {
-        throw new IllegalArgumentException("Task duration overly surpassed estimation");
-    }
-
-    double efficiency = this.completed ? 1.0 : 0.0;
-
-    return efficiency - duration / estimationInHours;
-  }
 }

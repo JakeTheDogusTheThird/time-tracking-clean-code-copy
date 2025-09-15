@@ -7,8 +7,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class TaskRankCalculator implements RankCalculator<Task> {
-    public static final double WORK_EFFECTIVE              =  1.0;
-    public static final double WORK_INEFFECTIVE            =  0.0;
+    public static final double WORK_EFFECTIVE              = 1.0;
+    public static final double WORK_INEFFECTIVE            = 0.0;
     public static final double ESTIMATION_EXCEEDING_FACTOR = 1.5;
 
     @Override

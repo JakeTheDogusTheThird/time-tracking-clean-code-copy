@@ -142,7 +142,7 @@ public class TestTimeTracking {
 
   @ParameterizedTest
   @MethodSource("provideNullTimeFromOrNullTimeTo")
-  public void givenNullTimeFromOrNullTimeTo_whenGetRating_throwsIllegalArgumentException(
+  public void givenNullTimeFromOrNullTimeTo_whenCalculateRank_throwsNullPointerException(
       LocalDateTime timeFrom,
       LocalDateTime timeTo
   ) {
@@ -152,8 +152,10 @@ public class TestTimeTracking {
         timeFrom,
         timeTo
     );
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, timeTracking::getRating);
-    assertEquals("TimeTracking must have non-null presence,task, timeFrom and timeTo", exception.getMessage());
+
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+    assertThrows(NullPointerException.class, () -> rankCalculator.calculateRank(timeTracking));
   }
 
   private static Stream<Arguments> provideNullTimeFromOrNullTimeTo() {
@@ -166,7 +168,7 @@ public class TestTimeTracking {
 
   @ParameterizedTest
   @MethodSource("provideNullPresenceOrNullTask")
-  public void givenNullPresenceOrNullTask_whenGetRating_throwsIllegalArgumentException(
+  public void givenNullPresenceOrNullTask_whenCalculateRank_throwsNullPointerException(
       Presence presence,
       Task task
   ) {
@@ -176,8 +178,9 @@ public class TestTimeTracking {
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, timeTracking::getRating);
-    assertEquals("TimeTracking must have non-null presence,task, timeFrom and timeTo", exception.getMessage());
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+    assertThrows(NullPointerException.class, () -> rankCalculator.calculateRank(timeTracking));
   }
 
   private static Stream<Arguments> provideNullPresenceOrNullTask() {
@@ -190,7 +193,7 @@ public class TestTimeTracking {
 
   @ParameterizedTest
   @MethodSource("providePresenceWithNullTimeInOrNullTimeOut")
-  public void givenPresenceWithNullTimeInOrNullTimeOut_whenGetRating_throwsIllegalArgumentException(
+  public void givenPresenceWithNullTimeInOrNullTimeOut_whenCalculateRank_throwsNullPointerException(
       Presence presence
   ) {
     TimeTracking timeTracking = new TimeTracking(
@@ -199,8 +202,9 @@ public class TestTimeTracking {
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, timeTracking::getRating);
-    assertEquals("TimeTracking must have non-null presence,task, timeFrom and timeTo", exception.getMessage());
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+    assertThrows(NullPointerException.class, () -> rankCalculator.calculateRank(timeTracking));
   }
 
   private static Stream<Presence> providePresenceWithNullTimeInOrNullTimeOut() {
@@ -212,49 +216,46 @@ public class TestTimeTracking {
   }
 
   @Test
-  public void givenTimeFromBeforeTimeTo_whenGetRating_throwsIllegalArgumentException() {
+  public void givenTimeFromBeforeTimeTo_whenCalculateRank_throwsIllegalArgumentException() {
     TimeTracking timeTracking = new TimeTracking(
         validPresence,
         task3Hour10Minutes,
         taskEnd.minusMinutes(1),
         taskStart.plusMinutes(1)
     );
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, timeTracking::getRating);
-    assertEquals(
-        """
-            Invalid time range: timeFrom must be before timeTo AND presence timeIn should be before timeOut""",
-        exception.getMessage()
-    );
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+    assertThrows(IllegalArgumentException.class, () -> rankCalculator.calculateRank(timeTracking));
   }
 
   @Test
-  public void givenPresenceTimeInBeforeTimeOut_whenGetRating_throwsIllegalArgumentException() {
+  public void givenPresenceTimeInBeforeTimeOut_whenCalculateRank_throwsIllegalArgumentException() {
     TimeTracking timeTracking = new TimeTracking(
         new Presence(null, presenceTimeOut, presenceTimeIn),
         task3Hour10Minutes,
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, timeTracking::getRating);
-    assertEquals(
-        """
-            Invalid time range: timeFrom must be before timeTo AND presence timeIn should be before timeOut""",
-        exception.getMessage()
-    );
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+    assertThrows(IllegalArgumentException.class, () -> rankCalculator.calculateRank(timeTracking));
   }
 
   @ParameterizedTest
-  @MethodSource("provideRatingCases")
-  public void givenTimeTracking_whenGetRating_returnRating(
+  @MethodSource("provideRankCases")
+  public void givenTimeTracking_whenCalculateRank_returnRank(
       TimeTracking timeTracking,
       double expectedResult
   ) {
-    double result = timeTracking.getRating();
+    TaskRankCalculator taskRankCalculator = new TaskRankCalculator();
+    TimeTrackingRankCalculator rankCalculator = new TimeTrackingRankCalculator(taskRankCalculator);
+
+    double result = rankCalculator.calculateRank(timeTracking);
     double errorMargin = 0.001;
     assertEquals(expectedResult, result, errorMargin);
   }
 
-  public static Stream<Arguments> provideRatingCases() {
+  public static Stream<Arguments> provideRankCases() {
     return Stream.of(
         Arguments.of(
             new TimeTracking(
@@ -262,7 +263,7 @@ public class TestTimeTracking {
                 task3Hour10Minutes,
                 taskStart.plusMinutes(1),
                 taskEnd.minusMinutes(1)),
-            1.064
+            0.509
         ),
         Arguments.of(
             new TimeTracking(
@@ -271,7 +272,7 @@ public class TestTimeTracking {
                 taskStart.plusMinutes(1),
                 taskStart.plusHours(8).plusMinutes(29)
             ),
-            0.792
+            0.312
         ),
         Arguments.of(
             new TimeTracking(
@@ -280,7 +281,7 @@ public class TestTimeTracking {
                 taskStart.plusMinutes(1),
                 taskStart.plusMinutes(14)
             ),
-            0.506
+            0.026
         )
     );
   }
