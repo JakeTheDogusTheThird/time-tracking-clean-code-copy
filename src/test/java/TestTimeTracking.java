@@ -24,7 +24,7 @@ public class TestTimeTracking {
   private static final Task task8Hour30Minutes = new Task("project", "8 hour 30 minute task", taskStart, taskStart.plusHours(8).plusMinutes(30), 10.0, true);
   private static final Task invalidTask = new Task(null, null, null, null, 0.0, false);
 
-  @Test
+    @Test
   public void givenValidTimeTracking_whenIsValid_returnTrue() {
     TimeTracking timeTracking = new TimeTracking(
         validPresence,
@@ -77,7 +77,9 @@ public class TestTimeTracking {
         task3Hour10Minutes,
         taskStart.plusHours(1),
         taskStart.plusHours(1).plusMinutes(14));
-    boolean result = timeTracking.isGood();
+    TaskEvaluator taskEvaluator = new TaskEvaluator();
+    TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+    boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 
@@ -88,7 +90,9 @@ public class TestTimeTracking {
         task8Hour30Minutes,
         taskStart.plusMinutes(1),
         taskStart.plusHours(8));
-    boolean result = timeTracking.isGood();
+      TaskEvaluator taskEvaluator = new TaskEvaluator();
+      TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+      boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 
@@ -100,7 +104,9 @@ public class TestTimeTracking {
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-    boolean result = timeTracking.isGood();
+      TaskEvaluator taskEvaluator = new TaskEvaluator();
+      TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+      boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 
@@ -116,7 +122,9 @@ public class TestTimeTracking {
         timeFrom,
         timeTo
     );
-    boolean result = timeTracking.isGood();
+    TaskEvaluator taskEvaluator = new TaskEvaluator();
+    TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+    boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 
@@ -136,7 +144,9 @@ public class TestTimeTracking {
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-    boolean result = timeTracking.isGood();
+    TaskEvaluator taskEvaluator = new TaskEvaluator();
+    TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+    boolean result = evaluator.isGood(timeTracking);
     assertTrue(result);
   }
 

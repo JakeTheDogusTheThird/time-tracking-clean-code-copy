@@ -12,11 +12,4 @@ public class Person {
     this.name = name;
     this.phone = phone;
   }
-
-  public boolean isGood() {
-    if (this.phone == null) {
-      return false;
-    }
-    return this.phone.startsWith("+373");
-  }
 }

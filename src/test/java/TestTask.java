@@ -1,4 +1,5 @@
 import org.example.model.Task;
+import org.example.service.TaskEvaluator;
 import org.example.service.TaskRankCalculator;
 import org.example.service.TaskValidator;
 import org.junit.jupiter.api.Test;
@@ -123,7 +124,8 @@ public class TestTask {
                 validStart.plusHours(8),
                 10.0,
                 false);
-        boolean result = task.isGood();
+        TaskEvaluator evaluator = new TaskEvaluator();
+        boolean result = evaluator.isGood(task);
         assertFalse(result);
     }
 
@@ -136,7 +138,8 @@ public class TestTask {
                 validStart.plusHours(9),
                 10.0,
                 true);
-        boolean result = task.isGood();
+        TaskEvaluator evaluator = new TaskEvaluator();
+        boolean result = evaluator.isGood(task);
         assertFalse(result);
     }
 
@@ -149,7 +152,8 @@ public class TestTask {
                 validStart.plusHours(8),
                 10.0,
                 true);
-        boolean result = task.isGood();
+        TaskEvaluator evaluator = new TaskEvaluator();
+        boolean result = evaluator.isGood(task);
         assertTrue(result);
     }
 
@@ -166,7 +170,8 @@ public class TestTask {
                 end,
                 10.0,
                 true);
-        boolean result = task.isGood();
+        TaskEvaluator evaluator = new TaskEvaluator();
+        boolean result = evaluator.isGood(task);
         assertFalse(result);
     }
 
@@ -179,7 +184,8 @@ public class TestTask {
                 validStart,
                 10.0,
                 true);
-        boolean result = task.isGood();
+        TaskEvaluator evaluator = new TaskEvaluator();
+        boolean result = evaluator.isGood(task);
         assertFalse(result);
     }
 

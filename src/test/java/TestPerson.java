@@ -1,4 +1,5 @@
 import org.example.model.Person;
+import org.example.service.PersonEvaluator;
 import org.example.service.PersonRankCalculator;
 import org.example.service.PersonValidator;
 import org.junit.jupiter.api.Test;
@@ -129,21 +130,24 @@ public class TestPerson {
     @Test
     public void givenMoldavianPrefixPhone_whenIsGood_returnTrue() {
         Person person = new Person("John Doe", "+37312345678");
-        boolean result = person.isGood();
+        PersonEvaluator evaluator = new PersonEvaluator();
+        boolean result = evaluator.isGood(person);
         assertTrue(result);
     }
 
     @Test
     public void givenItalianPrefixPhone_whenIsGood_returnFalse() {
         Person person = new Person("John Doe", "+39123456");
-        boolean result = person.isGood();
+        PersonEvaluator evaluator = new PersonEvaluator();
+        boolean result = evaluator.isGood(person);
         assertFalse(result);
     }
 
     @Test
     public void givenNullPhone_whenIsGood_returnFalse() {
         Person person = new Person("John Doe", null);
-        boolean result = person.isGood();
+        PersonEvaluator evaluator = new PersonEvaluator();
+        boolean result = evaluator.isGood(person);
         assertFalse(result);
     }
 }

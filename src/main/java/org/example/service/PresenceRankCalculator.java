@@ -30,7 +30,7 @@ public class PresenceRankCalculator implements RankCalculator<Presence> {
 
     private void requireNonNullTimes(LocalDateTime in, LocalDateTime out) {
         if (in == null || out == null) {
-            throw new IllegalArgumentException("Presence must have non-null timeIn and timeOut");
+            throw new NullPointerException("Presence must have non-null timeIn and timeOut");
         }
     }
 

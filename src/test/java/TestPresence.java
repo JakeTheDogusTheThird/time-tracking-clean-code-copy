@@ -1,6 +1,7 @@
 import org.example.model.Person;
 import org.example.model.Presence;
 import org.example.service.PersonValidator;
+import org.example.service.PresenceEvaluator;
 import org.example.service.PresenceRankCalculator;
 import org.example.service.PresenceValidator;
 import org.junit.jupiter.api.Test;
@@ -132,7 +133,8 @@ public class TestPresence {
         LocalDateTime timeIn = LocalDateTime.of(2025, 9, 9, 9, 0);
         LocalDateTime timeOut = LocalDateTime.of(2025, 9, 9, 17, 30);
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        boolean result = presence.isGood();
+        PresenceEvaluator evaluator = new PresenceEvaluator();
+        boolean result = evaluator.isGood(presence);
         assertTrue(result);
     }
 
@@ -143,7 +145,8 @@ public class TestPresence {
             LocalDateTime timeOut
     ) {
         Presence presence = new Presence(validPerson, timeIn, timeOut);
-        boolean result = presence.isGood();
+        PresenceEvaluator evaluator = new PresenceEvaluator();
+        boolean result = evaluator.isGood(presence);
         assertFalse(result);
     }
 
@@ -222,13 +225,13 @@ public class TestPresence {
 
     @ParameterizedTest
     @MethodSource("provideNullTimeInAndTimeOut")
-    public void givenNullTimeInOrTimeOut_whenCalculateRank_throwsIllegalArgumentException(
+    public void givenNullTimeInOrTimeOut_whenCalculateRank_throwsNullPointerException(
             LocalDateTime timeIn,
             LocalDateTime timeOut
     ) {
         Presence presence = new Presence(validPerson, timeIn, timeOut);
         PresenceRankCalculator rankCalculator = new PresenceRankCalculator();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> rankCalculator.calculateRank(presence));
         assertEquals("Presence must have non-null timeIn and timeOut",  exception.getMessage());
     }

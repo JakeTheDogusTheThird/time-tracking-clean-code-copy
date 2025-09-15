@@ -1,8 +1,6 @@
 package org.example.service;
 
 import org.example.model.Presence;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -14,16 +12,25 @@ public class PresenceEvaluator implements Evaluator<Presence> {
 
   @Override
   public boolean isGood(Presence presence) {
-    LocalDateTime in = presence.getTimeIn();
-    LocalDateTime out = presence.getTimeOut();
-
-    if (in == null || out == null)
-      return false;
-
-    double hours = ChronoUnit.MINUTES.between(in, out) / MINUTES_IN_HOUR;
-
-    return hours >= MINIMUM_NORMAL_WORK_DAY
-        && hours <= MAXIMUM_NORMAL_WORK_DAY
-        && in.toLocalTime().isBefore(TIME_BEFORE_PENALTY);
+      if (!hasValidTimes(presence)) {
+          return false;
+      }
+      return hasNormalWorkDuration(presence) && isOnTime(presence);
   }
+
+    private boolean hasValidTimes(Presence presence) {
+        return presence.getTimeIn() != null && presence.getTimeOut() != null;
+    }
+
+    private boolean hasNormalWorkDuration(Presence presence) {
+        double hours = ChronoUnit.MINUTES.between(
+                presence.getTimeIn(), presence.getTimeOut()
+        ) / MINUTES_IN_HOUR;
+
+        return hours >= MINIMUM_NORMAL_WORK_DAY && hours <= MAXIMUM_NORMAL_WORK_DAY;
+    }
+
+    private boolean isOnTime(Presence presence) {
+        return presence.getTimeIn().toLocalTime().isBefore(TIME_BEFORE_PENALTY);
+    }
 }
