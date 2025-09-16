@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Presence;
+
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -12,25 +13,25 @@ public class PresenceEvaluator implements Evaluator<Presence> {
 
   @Override
   public boolean isGood(Presence presence) {
-      if (!hasValidTimes(presence)) {
-          return false;
-      }
-      return hasNormalWorkDuration(presence) && isOnTime(presence);
+    if (!hasValidTimes(presence)) {
+      return false;
+    }
+    return hasNormalWorkDuration(presence) && isOnTime(presence);
   }
 
-    private boolean hasValidTimes(Presence presence) {
-        return presence.getTimeIn() != null && presence.getTimeOut() != null;
-    }
+  private boolean hasValidTimes(Presence presence) {
+    return presence.getTimeIn() != null && presence.getTimeOut() != null;
+  }
 
-    private boolean hasNormalWorkDuration(Presence presence) {
-        double hours = ChronoUnit.MINUTES.between(
-                presence.getTimeIn(), presence.getTimeOut()
-        ) / MINUTES_IN_HOUR;
+  private boolean hasNormalWorkDuration(Presence presence) {
+    double hours = ChronoUnit.MINUTES.between(
+        presence.getTimeIn(), presence.getTimeOut()
+    ) / MINUTES_IN_HOUR;
 
-        return hours >= MINIMUM_NORMAL_WORK_DAY && hours <= MAXIMUM_NORMAL_WORK_DAY;
-    }
+    return hours >= MINIMUM_NORMAL_WORK_DAY && hours <= MAXIMUM_NORMAL_WORK_DAY;
+  }
 
-    private boolean isOnTime(Presence presence) {
-        return presence.getTimeIn().toLocalTime().isBefore(TIME_BEFORE_PENALTY);
-    }
+  private boolean isOnTime(Presence presence) {
+    return presence.getTimeIn().toLocalTime().isBefore(TIME_BEFORE_PENALTY);
+  }
 }

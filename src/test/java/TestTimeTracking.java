@@ -24,7 +24,7 @@ public class TestTimeTracking {
   private static final Task task8Hour30Minutes = new Task("project", "8 hour 30 minute task", taskStart, taskStart.plusHours(8).plusMinutes(30), 10.0, true);
   private static final Task invalidTask = new Task(null, null, null, null, 0.0, false);
 
-    @Test
+  @Test
   public void givenValidTimeTracking_whenIsValid_returnTrue() {
     TimeTracking timeTracking = new TimeTracking(
         validPresence,
@@ -45,13 +45,13 @@ public class TestTimeTracking {
   @ParameterizedTest
   @MethodSource("provideTimeTrackingForIsValid")
   public void isValid_ShouldReturnFalseForInvalidTimeTracking(TimeTracking timeTracking) {
-      PersonValidator personValidator = new PersonValidator();
-      PresenceValidator presenceValidator = new PresenceValidator(personValidator);
-      TaskValidator taskValidator = new TaskValidator();
-      TimeTrackingValidator timeTrackingValidator = new TimeTrackingValidator(presenceValidator, taskValidator);
+    PersonValidator personValidator = new PersonValidator();
+    PresenceValidator presenceValidator = new PresenceValidator(personValidator);
+    TaskValidator taskValidator = new TaskValidator();
+    TimeTrackingValidator timeTrackingValidator = new TimeTrackingValidator(presenceValidator, taskValidator);
 
-      boolean result = timeTrackingValidator.isValid(timeTracking);
-      assertFalse(result);
+    boolean result = timeTrackingValidator.isValid(timeTracking);
+    assertFalse(result);
   }
 
   private static Stream<TimeTracking> provideTimeTrackingForIsValid() {
@@ -90,9 +90,9 @@ public class TestTimeTracking {
         task8Hour30Minutes,
         taskStart.plusMinutes(1),
         taskStart.plusHours(8));
-      TaskEvaluator taskEvaluator = new TaskEvaluator();
-      TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
-      boolean result = evaluator.isGood(timeTracking);
+    TaskEvaluator taskEvaluator = new TaskEvaluator();
+    TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+    boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 
@@ -104,9 +104,9 @@ public class TestTimeTracking {
         taskStart.plusMinutes(1),
         taskEnd.minusMinutes(1)
     );
-      TaskEvaluator taskEvaluator = new TaskEvaluator();
-      TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
-      boolean result = evaluator.isGood(timeTracking);
+    TaskEvaluator taskEvaluator = new TaskEvaluator();
+    TimeTrackingEvaluator evaluator = new TimeTrackingEvaluator(taskEvaluator);
+    boolean result = evaluator.isGood(timeTracking);
     assertFalse(result);
   }
 

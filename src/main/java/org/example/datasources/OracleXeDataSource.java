@@ -1,0 +1,22 @@
+package org.example.datasources;
+
+import com.mysql.cj.jdbc.MysqlDataSource;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class OracleXeDataSource {
+  private final MysqlDataSource oracleDataSource;
+
+  public OracleXeDataSource() {
+    this.oracleDataSource = new MysqlDataSource();
+    this.oracleDataSource.setURL("jdbc:mysql://localhost:3306/testdb");
+    this.oracleDataSource.setUser("user");
+    this.oracleDataSource.setPassword("password");
+  }
+
+  public Connection getConnection() throws SQLException {
+    return this.oracleDataSource.getConnection();
+  }
+}

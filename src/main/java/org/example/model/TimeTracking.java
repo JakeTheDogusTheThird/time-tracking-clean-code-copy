@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class TimeTracking {
+  private int id;
   private final Presence presence;
   private final Task task;
   private final LocalDateTime timeFrom;

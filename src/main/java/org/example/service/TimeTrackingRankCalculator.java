@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class TimeTrackingRankCalculator implements RankCalculator<TimeTracking>  {
+public class TimeTrackingRankCalculator implements RankCalculator<TimeTracking> {
   private static final int MINIMUM_DURATION = 15;
   private static final int MAX_DURATION = 7 * 60;
   private static final double TASK_WEIGHT = 0.6;

@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.Task;
+
 import java.time.LocalDateTime;
 
 public class TaskValidator implements Validator<Task> {
@@ -16,9 +17,9 @@ public class TaskValidator implements Validator<Task> {
     double estimation = task.getEstimationInHours();
 
     return isValidProjectName(projectName)
-            && isValidTaskName(taskName)
-            && isChronologicallyValid(start, end)
-            && isValidEstimation(estimation);
+        && isValidTaskName(taskName)
+        && isChronologicallyValid(start, end)
+        && isValidEstimation(estimation);
   }
 
 
@@ -37,6 +38,6 @@ public class TaskValidator implements Validator<Task> {
   }
 
   private boolean isValidEstimation(double estimationInHours) {
-      return estimationInHours > 0.0;
+    return estimationInHours > 0.0;
   }
 }

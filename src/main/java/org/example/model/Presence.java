@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class Presence {
+  private int id;
   private final Person person;
   private final LocalDateTime timeIn;
   private final LocalDateTime timeOut;

@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 public class PresenceValidator implements Validator<Presence> {
   private static final LocalTime START_DAY = LocalTime.of(7, 29);
-  private static final LocalTime END_DAY   = LocalTime.of(21, 31);
+  private static final LocalTime END_DAY = LocalTime.of(21, 31);
 
   private final PersonValidator personValidator;
 

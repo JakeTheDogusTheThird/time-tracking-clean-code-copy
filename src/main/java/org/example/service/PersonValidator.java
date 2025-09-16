@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class PersonValidator implements Validator<Person> {
   private static final Pattern PHONE_PATTERN =
       Pattern.compile("^\\+373[0-9]{8}$|^\\+39[0-9]{6,12}$");
-  private static final Pattern NAME_PATTERN  =
+  private static final Pattern NAME_PATTERN =
       Pattern.compile("(\\p{Alpha} ?)*");
 
   @Override
