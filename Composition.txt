@@ -1,0 +1,52 @@
+public interface CsvRowMapper<T> {
+    T map(String[] row);
+}
+
+public class CsvRepository<T> implements ReaderToEntityMapper<T> {
+    private final String csvPath;
+    private final CsvRowMapper<T> mapper;
+    private final int idIndex;
+
+    public CsvRepository(String csvPath, CsvRowMapper<T> mapper, int idIndex) {
+        this.csvPath = csvPath;
+        this.mapper = mapper;
+        this.idIndex = idIndex;
+    }
+
+    @Override
+    public T get(int id) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvPath))) {
+            String[] row;
+            while ((row = reader.readNext()) != null) {
+                if (row[idIndex].equals(String.valueOf(id))) {
+                    return mapper.map(row);
+                }
+            }
+        } catch (IOException | CsvValidationException e) {
+            throw new DataAccessException(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
+    public List<T> getAll() {
+        try (CSVReader reader = new CSVReader(new FileReader(csvPath))) {
+            return reader.readAll().stream()
+                         .map(mapper::map)
+                         .toList();
+        } catch (IOException | CsvException e) {
+            throw new DataAccessException(e.getMessage(), e);
+        }
+    }
+}
+
+
+CsvRowMapper<Person> personMapper = row -> {
+    if (row == null) return null;
+    Person p = new Person(row[1], row[2]);
+    p.setId(Integer.parseInt(row[0]));
+    return p;
+};
+
+ReaderToEntityMapper<Person> personRepo =
+    new CsvRepository<>("people.csv", personMapper, 0);

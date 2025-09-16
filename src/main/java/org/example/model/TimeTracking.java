@@ -1,11 +1,13 @@
 package org.example.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 public class TimeTracking {
+  @Setter
   private int id;
   private final Presence presence;
   private final Task task;
