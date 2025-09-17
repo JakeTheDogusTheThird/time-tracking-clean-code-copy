@@ -11,10 +11,12 @@ import org.example.repository.csv.CsvTaskReader;
 import org.example.repository.csv.CsvTimeTrackingReader;
 import org.example.repository.jdbc.JdbcPersonDao;
 import org.example.repository.jdbc.JdbcPresenceDao;
+import org.example.service.AbstractComparator;
 import org.example.service.PersonRankCalculator;
 import org.example.service.PersonValidator;
 import org.example.service.PresenceValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -63,7 +65,13 @@ public class Main {
       presenceDao.saveAll(presences);
 
       PersonRankCalculator  personRankCalculator = new PersonRankCalculator();
-      persons.sort((o1, o2)
-          -> (int) (personRankCalculator.calculateRank(o1) - personRankCalculator.calculateRank(o2)));
+      AbstractComparator<Person> personComparator = new AbstractComparator<Person>(personRankCalculator);
+
+      List<Person> temp = new ArrayList<>(persons);
+
+      temp.sort(personComparator);
+      System.out.println();
+      System.out.println(persons);
+      System.out.println(temp);
     }
 }
