@@ -1,8 +1,6 @@
 package org.example.datasources;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -12,8 +10,8 @@ public class OracleXeDataSource {
   public OracleXeDataSource() {
     this.oracleDataSource = new MysqlDataSource();
     this.oracleDataSource.setURL("jdbc:mysql://localhost:3306/testdb");
-    this.oracleDataSource.setUser("user");
-    this.oracleDataSource.setPassword("password");
+    this.oracleDataSource.setUser("root");
+    this.oracleDataSource.setPassword("rootPass");
   }
 
   public Connection getConnection() throws SQLException {

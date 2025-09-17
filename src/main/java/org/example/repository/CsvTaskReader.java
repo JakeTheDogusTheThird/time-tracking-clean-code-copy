@@ -2,9 +2,6 @@ package org.example.repository;
 
 import org.example.model.Task;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class CsvTaskReader extends AbstractCsvReader<Task> {
   private static final int PROJECT = 1;
   private static final int NAME = 2;
@@ -22,7 +19,7 @@ public class CsvTaskReader extends AbstractCsvReader<Task> {
     if (row == null) {
       return null;
     }
-    return new Task(
+    Task task = new Task(
         row[PROJECT],
         row[NAME],
         parseDateTime(row[START]),
@@ -30,10 +27,7 @@ public class CsvTaskReader extends AbstractCsvReader<Task> {
         Double.parseDouble(row[ESTIMATION]),
         Boolean.parseBoolean(row[COMPLETED])
     );
-  }
-
-  private LocalDateTime parseDateTime(String time) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return LocalDateTime.parse(time, formatter);
+    task.setId(Integer.parseInt(row[ID]));
+    return task;
   }
 }

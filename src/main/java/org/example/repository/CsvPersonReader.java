@@ -14,6 +14,8 @@ public class CsvPersonReader extends AbstractCsvReader<Person> {
     if (row == null) {
       return null;
     }
-    return new Person(row[NAME], row[PHONE]);
+    Person person = new Person(row[NAME], row[PHONE]);
+    person.setId(Integer.parseInt(row[ID]));
+    return person;
   }
 }

@@ -6,6 +6,8 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public abstract class AbstractCsvReader<T> implements EntityReader<T> {
@@ -50,6 +52,14 @@ public abstract class AbstractCsvReader<T> implements EntityReader<T> {
     } catch (IOException | CsvException e) {
       throw new DataAccessException(e.getMessage(), e);
     }
+  }
+
+  protected LocalDateTime parseDateTime(String time) {
+    if (time.isBlank()) {
+      return null;
+    }
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    return LocalDateTime.parse(time, formatter);
   }
 
   protected abstract T mapRowToEntity(String[] row);

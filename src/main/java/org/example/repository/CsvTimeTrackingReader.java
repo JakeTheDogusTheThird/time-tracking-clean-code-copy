@@ -4,9 +4,6 @@ import org.example.model.Presence;
 import org.example.model.Task;
 import org.example.model.TimeTracking;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class CsvTimeTrackingReader extends AbstractCsvReader<TimeTracking>{
   private final CsvPresenceReader presenceReader;
   private final CsvTaskReader taskReader;
@@ -34,16 +31,13 @@ public class CsvTimeTrackingReader extends AbstractCsvReader<TimeTracking>{
     Presence presence = presenceReader.get(Integer.parseInt(row[PRESENCE_ID]));
     Task task = taskReader.get(Integer.parseInt(row[TASK_ID]));
 
-    return new TimeTracking(
+    TimeTracking timeTracking = new TimeTracking(
         presence,
         task,
         parseDateTime(row[FROM]),
         parseDateTime(row[TO])
     );
-  }
-
-  private LocalDateTime parseDateTime(String time) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return LocalDateTime.parse(time, formatter);
+    timeTracking.setId(Integer.parseInt(row[ID]));
+    return timeTracking;
   }
 }

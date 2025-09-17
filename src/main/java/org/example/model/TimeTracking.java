@@ -2,9 +2,11 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+@ToString
 @Getter
 public class TimeTracking {
   @Setter

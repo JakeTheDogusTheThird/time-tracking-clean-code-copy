@@ -8,9 +8,7 @@ public interface Dao<T> {
 
   List<T> getAll();
 
-  T save(T t);
+  void save(T t) throws DataAccessException;
 
-  T update(int id, T t);
-
-  void delete(int id);
+  void saveAll(List<T> ts) throws DataAccessException;
 }

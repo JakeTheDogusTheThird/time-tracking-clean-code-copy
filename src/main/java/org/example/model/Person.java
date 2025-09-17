@@ -3,7 +3,9 @@ package org.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Getter
 public class Person {
   @Setter
