@@ -1,10 +1,10 @@
-package org.example.repository;
+package org.example.repository.csv;
 
 import org.example.model.Presence;
 import org.example.model.Task;
 import org.example.model.TimeTracking;
 
-public class CsvTimeTrackingReader extends AbstractCsvReader<TimeTracking>{
+public class CsvTimeTrackingReader extends AbstractCsvReader<TimeTracking> {
   private final CsvPresenceReader presenceReader;
   private final CsvTaskReader taskReader;
 

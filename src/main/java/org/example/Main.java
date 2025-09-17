@@ -5,7 +5,13 @@ import org.example.model.Person;
 import org.example.model.Presence;
 import org.example.model.Task;
 import org.example.model.TimeTracking;
-import org.example.repository.*;
+import org.example.repository.csv.CsvPersonReader;
+import org.example.repository.csv.CsvPresenceReader;
+import org.example.repository.csv.CsvTaskReader;
+import org.example.repository.csv.CsvTimeTrackingReader;
+import org.example.repository.jdbc.JdbcPersonDao;
+import org.example.repository.jdbc.JdbcPresenceDao;
+import org.example.service.PersonRankCalculator;
 import org.example.service.PersonValidator;
 import org.example.service.PresenceValidator;
 
@@ -55,5 +61,9 @@ public class Main {
       PresenceValidator presenceValidator = new PresenceValidator(personValidator);
       JdbcPresenceDao presenceDao = new JdbcPresenceDao(oracleXeDataSource, presenceValidator);
       presenceDao.saveAll(presences);
+
+      PersonRankCalculator  personRankCalculator = new PersonRankCalculator();
+      persons.sort((o1, o2)
+          -> (int) (personRankCalculator.calculateRank(o1) - personRankCalculator.calculateRank(o2)));
     }
 }

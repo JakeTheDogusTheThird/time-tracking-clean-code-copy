@@ -1,8 +1,9 @@
-package org.example.repository;
+package org.example.repository.csv;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
+import org.example.repository.exceptions.DataAccessException;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public abstract class AbstractCsvReader<T> implements EntityReader<T> {
 
   @Override
   public List<T> getAll() {
-    List<String[]> rows = readAllCsvFile();
+    List<String[]> rows = readAllLines();
     return rows.stream()
         .map(this::mapRowToEntity)
         .toList();
@@ -46,7 +47,7 @@ public abstract class AbstractCsvReader<T> implements EntityReader<T> {
     return null;
   }
 
-  protected List<String[]> readAllCsvFile() {
+  protected List<String[]> readAllLines() {
     try (CSVReader reader = new CSVReader(new FileReader(csvPath))) {
       return reader.readAll();
     } catch (IOException | CsvException e) {

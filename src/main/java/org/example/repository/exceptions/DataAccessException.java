@@ -1,4 +1,4 @@
-package org.example.repository;
+package org.example.repository.exceptions;
 
 public class DataAccessException extends RuntimeException {
   public DataAccessException(String message, Throwable cause) {
