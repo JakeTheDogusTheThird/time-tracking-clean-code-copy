@@ -1,13 +1,11 @@
 package org.example.service;
 
-import org.example.model.Person;
-
 import java.util.Comparator;
 
-public class AbstractComparator<T> implements Comparator<T> {
+public class GenericComparator<T> implements Comparator<T> {
   private final RankCalculator<T> rankCalculator;
 
-  public AbstractComparator(RankCalculator<T> rankCalculator) {
+  public GenericComparator(RankCalculator<T> rankCalculator) {
     this.rankCalculator = rankCalculator;
   }
 

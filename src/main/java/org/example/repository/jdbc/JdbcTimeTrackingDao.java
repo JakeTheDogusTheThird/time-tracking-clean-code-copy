@@ -8,10 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class JdbcTimeTracking extends AbstractJdbcDao<TimeTracking> {
+public class JdbcTimeTrackingDao extends AbstractJdbcDao<TimeTracking> {
   private final TimeTrackingValidator validator;
 
-  public JdbcTimeTracking(OracleXeDataSource dataSource, TimeTrackingValidator validator) {
+  public JdbcTimeTrackingDao(OracleXeDataSource dataSource, TimeTrackingValidator validator) {
     super(dataSource);
     this.validator = validator;
   }
@@ -19,7 +19,7 @@ public class JdbcTimeTracking extends AbstractJdbcDao<TimeTracking> {
   @Override
   protected String getInsertSql() {
     return """
-          INSERT INTO tasks (id, presence_id, task_id, time_from, time_to)
+          INSERT INTO time_trackings (id, presence_id, task_id, time_from, time_to)
           VALUES (?, ?, ?, ?, ?)
           """;
   }

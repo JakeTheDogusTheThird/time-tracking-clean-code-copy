@@ -11,10 +11,10 @@ import org.example.repository.csv.CsvTaskReader;
 import org.example.repository.csv.CsvTimeTrackingReader;
 import org.example.repository.jdbc.JdbcPersonDao;
 import org.example.repository.jdbc.JdbcPresenceDao;
-import org.example.service.AbstractComparator;
-import org.example.service.PersonRankCalculator;
-import org.example.service.PersonValidator;
-import org.example.service.PresenceValidator;
+import org.example.repository.jdbc.JdbcTaskDao;
+import org.example.repository.jdbc.JdbcTimeTrackingDao;
+import org.example.service.*;
+import org.example.utility.DBTableCleaner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +49,13 @@ public class Main {
       );
 
       List<TimeTracking> timeTrackings = timeTrackingReader.getAll();
-
       for (TimeTracking timeTracking : timeTrackings) {
         System.out.println(timeTracking);
       }
 
       OracleXeDataSource oracleXeDataSource = new OracleXeDataSource();
+
+      DBTableCleaner.deleteRowsInTables(oracleXeDataSource);
 
       PersonValidator personValidator = new PersonValidator();
       JdbcPersonDao personDao = new JdbcPersonDao(oracleXeDataSource, personValidator);
@@ -64,14 +65,30 @@ public class Main {
       JdbcPresenceDao presenceDao = new JdbcPresenceDao(oracleXeDataSource, presenceValidator);
       presenceDao.saveAll(presences);
 
+      TaskValidator taskValidator = new TaskValidator();
+      JdbcTaskDao taskDao = new JdbcTaskDao(oracleXeDataSource, taskValidator);
+      taskDao.saveAll(tasks);
+
+      TimeTrackingValidator timeTrackingValidator = new TimeTrackingValidator(
+          presenceValidator,
+          taskValidator
+      );
+      JdbcTimeTrackingDao timeTrackingDao = new JdbcTimeTrackingDao(oracleXeDataSource, timeTrackingValidator);
+      timeTrackingDao.saveAll(timeTrackings);
+
       PersonRankCalculator  personRankCalculator = new PersonRankCalculator();
-      AbstractComparator<Person> personComparator = new AbstractComparator<Person>(personRankCalculator);
+      GenericComparator<Person> personComparator = new GenericComparator<>(personRankCalculator);
 
       List<Person> temp = new ArrayList<>(persons);
 
       temp.sort(personComparator);
       System.out.println();
-      System.out.println(persons);
-      System.out.println(temp);
+      for (Person person : persons) {
+        System.out.println(person);
+      }
+
+      for (Person person : temp) {
+        System.out.println(person);
+      }
     }
 }
