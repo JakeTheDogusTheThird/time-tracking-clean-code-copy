@@ -1,7 +1,7 @@
 package org.example.repository.jdbc;
 
 import org.example.repository.exceptions.DataAccessException;
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public abstract class AbstractJdbcDao<T> implements Dao<T> {
-  protected final OracleXeDataSource dataSource;
+  protected final MySqlDataSource dataSource;
 
-  protected AbstractJdbcDao(OracleXeDataSource dataSource) {
+  protected AbstractJdbcDao(MySqlDataSource dataSource) {
     this.dataSource = dataSource;
   }
 

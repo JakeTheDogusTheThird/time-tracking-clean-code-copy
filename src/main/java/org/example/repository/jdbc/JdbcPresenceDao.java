@@ -1,6 +1,6 @@
 package org.example.repository.jdbc;
 
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 import org.example.model.Presence;
 import org.example.service.PresenceValidator;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class JdbcPresenceDao extends AbstractJdbcDao<Presence> {
   private final PresenceValidator validator;
 
-  public JdbcPresenceDao(OracleXeDataSource dataSource, PresenceValidator validator) {
+  public JdbcPresenceDao(MySqlDataSource dataSource, PresenceValidator validator) {
     super(dataSource);
     this.validator = validator;
   }

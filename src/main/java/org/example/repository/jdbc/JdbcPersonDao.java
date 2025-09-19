@@ -1,6 +1,6 @@
 package org.example.repository.jdbc;
 
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 import org.example.model.Person;
 import org.example.service.PersonValidator;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class JdbcPersonDao extends AbstractJdbcDao<Person> {
   private final PersonValidator validator;
 
-  public JdbcPersonDao(OracleXeDataSource dataSource, PersonValidator validator) {
+  public JdbcPersonDao(MySqlDataSource dataSource, PersonValidator validator) {
     super(dataSource);
     this.validator = validator;
   }

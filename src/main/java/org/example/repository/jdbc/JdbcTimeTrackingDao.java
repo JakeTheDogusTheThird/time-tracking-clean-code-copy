@@ -1,6 +1,6 @@
 package org.example.repository.jdbc;
 
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 import org.example.model.TimeTracking;
 import org.example.service.TimeTrackingValidator;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class JdbcTimeTrackingDao extends AbstractJdbcDao<TimeTracking> {
   private final TimeTrackingValidator validator;
 
-  public JdbcTimeTrackingDao(OracleXeDataSource dataSource, TimeTrackingValidator validator) {
+  public JdbcTimeTrackingDao(MySqlDataSource dataSource, TimeTrackingValidator validator) {
     super(dataSource);
     this.validator = validator;
   }

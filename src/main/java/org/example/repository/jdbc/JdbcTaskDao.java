@@ -1,6 +1,6 @@
 package org.example.repository.jdbc;
 
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 import org.example.model.Task;
 import org.example.service.TaskValidator;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class JdbcTaskDao extends AbstractJdbcDao<Task> {
   private final TaskValidator validator;
 
-  public JdbcTaskDao(OracleXeDataSource dataSource, TaskValidator validator) {
+  public JdbcTaskDao(MySqlDataSource dataSource, TaskValidator validator) {
     super(dataSource);
     this.validator = validator;
   }

@@ -1,13 +1,13 @@
 package org.example.utility;
 
-import org.example.datasources.OracleXeDataSource;
+import org.example.datasources.MySqlDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBTableCleaner {
-  public static void deleteRowsInTables(OracleXeDataSource dataSource) {
+  public static void deleteRowsInTables(MySqlDataSource dataSource) {
     try (Connection connection = dataSource.getConnection()) {
       connection.setAutoCommit(false); // Start transaction
 
